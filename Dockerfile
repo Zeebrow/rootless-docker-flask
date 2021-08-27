@@ -1,9 +1,11 @@
 FROM python:3.8-slim-buster
 
+RUN useradd -u 1001 appuser
+
 WORKDIR app
 COPY . .
 
-RUN pip install --no-cache-dir --root -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # user comes after pip install, because permissions
 # the app will run but os.getuid() errors out, saying 

@@ -1,0 +1,3 @@
+# source me
+export FLASK_APP=simpleflask
+python3 -m flask run 
