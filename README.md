@@ -41,7 +41,7 @@ Either the term "rootless" is misleading, or I'm doing something wrong here.
 ### It would be neet to be able to configure the response as the container is running
 Say for example you build the container, with your Python app importing `json`,`os`,`sys`, etc. 
 
-Add a custom Flask route, say, `/myconfig`. It returns `jsonify(json.load(fd))`, where `fd` is a path on the docker host to a json file that looks something like:
+Add a custom Flask route, say, `/myconfig`. It returns `jsonify(json.load(fd))`, where `fd` is a your `open()` config file on the docker host. This file would look something like:
 
 ```
 {
@@ -50,7 +50,7 @@ Add a custom Flask route, say, `/myconfig`. It returns `jsonify(json.load(fd))`,
 }
 ```
 
-Under the hood, it would just be
+Under the hood, Python would use `exec()` to run the code\*. Quick n dirty:
 
 ```
 @app.route('/myconfig')
@@ -64,12 +64,14 @@ def myconfig(maybe_query_string_here=None):
 
 then you can `curl localhost:5000/myconfig` to see how various Python modules behave in a container.
 
-Obviously, Terms and Conditions apply. See store for details.
-
 Theoretically, you've got the Python interpreter at your disposal here, and you can't really fuck anything up because you're in a container.
+
+\*Obviously, Terms and Conditions apply. See store for details
 
 ## More info
 
 [Great in-depth guide to rootlessness (That I need to finish reading)](https://rootlesscontaine.rs/)
+
 [USER Dockerfile directive](https://docs.docker.com/engine/reference/builder/#user)
+
 [rootless-docker](https://docs.docker.com/engine/security/rootless/)
