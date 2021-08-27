@@ -1,0 +1,5 @@
+#!/bin/bash
+
+HERE="$HOME/sanbox/simpleflask"
+
+export FLASK_APP=simpleflask
