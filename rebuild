@@ -1,0 +1,12 @@
+#!/bin/bash
+# Funny, actually makes this less useful
+lineclr() { printf " %.0s" `seq 1 $(tput cols)`; printf "\r"; }
+# I like tiny shell scripts
+printf "rebuilding with user '${1:-root}...'\n"
+printf "Removing old container...\r" && docker rm -f sfzeebrow 2>&1 > /dev/null
+lineclr && printf "Build 'n' tag...\r" && docker build -t local/simpleflask:zeebrow . 2>&1 > /dev/null
+lineclr && printf "Standung up as user '%s...'\r" "${1:-root}" && docker run -d --rm --name sfzeebrow -p5001:5000 -u "${1:-root}" local/simpleflask:zeebrow 2>&1 > /dev/null
+lineclr && printf "Done.\n"
+sleep 0.5
+echo 'curl localhost:5001/sysinfo returns:'
+curl localhost:5001/sysinfo

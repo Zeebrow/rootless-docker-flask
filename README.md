@@ -24,8 +24,11 @@ This will show `"user-getpass": "appuser"` as defined in the Dockerfile.
 
 ## Notes
 
-You can pass `-u root` to `docker run` for the container to behave like a
-more-familiar root container.
+### Setting users when standing up a container
+
+`-u` only works if the user exists inside the container. If the Dockerfile didn't have the first `RUN` directive, things would seems to work swimmingly - but Python would call `os.getpass.getuser()` and shit the bed, with something like "No user found for uid 1001" (or whatever was set with `USER`).
+
+You can always pass `-u root` to `docker run` for the container to behave like a more-familiar root container. Not sure yet how different a "rootless root" user in a container is. Me thinks a lot not gonna work, man.
 
 ```
 docker rm -f local/rootless-flask
