@@ -34,6 +34,20 @@ docker run -d --rm --name rootless-flask -p5000:5000 -u root local/rootless-flas
 
 Either the term "rootless" is misleading, or I'm doing something wrong here.
 
+### Read/write access to bind mounts is determined by Docker host's file permissions
+
+Not to be confused with "the Docker host's file ownership".
+
+This must be a result of how `newuidmap` and `newgidmap` programs work (they're dependencies for rootless Docker). The man pages for these are really short.
+
+Basically, it seems that if you want to write to files on a bind mount from inside a container, the permissions need to be set appropriately on the host. Which kind of makes sense. I dunno if this is the same for rooty Docker (I need to spin up a VM and try this out... sometime).
+
+This holds even if the container user exists on the Docker host, and has the same `$(id)` in and outside of the container.
+
+Yup, still true if you passed `-u root` with `docker run`. Only difference is you can frolic about in the container more freely. So if you're doing containers right, this makes no difference.
+
+So far, so neat.
+
 ## Thoughts
 
 ### A multi-stage build would be ideal to bring the image size down (124MB = yikes)
