@@ -12,7 +12,11 @@ I already head the rooty tooty Docker installed, along with a Kubernetes cluster
 
 ## usage
 
+```
 `./rebuild [user to run as]`
+```
+
+or
 
 ```
 git clone https://github.com/Zeebrow/rootless-docker-flask
