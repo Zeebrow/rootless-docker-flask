@@ -1,8 +1,8 @@
 # Rootless Docker with Flask
 
-"Rootless" immediately sounds great. But I want more details than what the docs provides.
+"Rootless" immediately sounds great. Safety! Ownership! In case you're just joining, far too many Docker pages lack clarity and/or depth outside of the immediate usecases you're there searching for. (How could they? It's only a cross-platform container runtime that needs to support workloads of the likes of Kubernetes, up until recently) I want more details than what the Docker docs provide, in this case.
 
-So here I threw up a simple Flask api app (read: "Hello World++") that provides some info on what's going on under the hood of a rootless-Docker install.
+So here I threw up a little Flask api app (read: "Hello World++") that provides some info on what's going on under the hood of a rootless-Docker install.
 
 I did learn a few interesting details about the daemon, but also about what it might mean to migrate a containerized app that was written under the assumption that container's runtime has root access.
 
