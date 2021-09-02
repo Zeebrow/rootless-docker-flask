@@ -1,14 +1,20 @@
 # Rootless Docker with Flask
 
-"Rootless" immediately sounds great. But I don't know how it works.
+"Rootless" immediately sounds great. But I want more details than what the docs provides.
 
-This is a simple dive into it.
+So here I threw up a simple Flask api app (read: "Hello World++") that provides some info on what's going on under the hood of a rootless-Docker install.
 
-### requierments
+I did learn a few interesting details about the daemon, but also about what it might mean to migrate a containerized app that was written under the assumption that container's runtime has root access.
+
+### background
+
+Rootless-Docker is a more secure way to run the Docker daemon.
 
 This is done after setting up [rootless-docker](https://docs.docker.com/engine/security/rootless/) on my Ubuntu host.
 
-I already head the rooty tooty Docker installed, along with a Kubernetes cluster running on it. So yeah, there's some ugly hiding.
+I already head the rooty tooty Docker installed, along with a Kubernetes cluster running. HAd I been hosting anything of value, well, let's just say I wouldn't have been able to rush this out to build on like I've done. 
+
+I wrote this taking for granted that rootless-Docker is installed and configured per the docs. Test for yourself with `cat /run/user/$(id -u)/docker.pid`
 
 ## usage
 
@@ -25,7 +31,7 @@ docker build -t local/rootless-flask .
 docker run -d --rm --name rootless-flask -p5000:5000 local/rootless-flask
 curl localhost:5000/sysinfo # gets some info from inside the container
 ```
-This will show `"user-getpass": "appuser"` as defined in the Dockerfile.
+This will show `"user-getpass": "appuser"` as defined in the Dockerfile on success.
 
 
 ## Notes
@@ -59,9 +65,12 @@ So far, so neat.
 
 ## Thoughts
 
-### A multi-stage build would be ideal to bring the image size down (124MB = yikes)
+### 124MB image size = yikes 
+A multi-stage build could bring the image size down. I wonder how big a footprint the Golang equivalent would be - that'd be a fun Saturday! 
 
 ### It would be neet to be able to configure the response as the container is running
+Totally unrelated to rootless docker. I wanted to think through a potential design pattern that is close to similar api projects I've written in the past.
+
 Say for example you build the container, with your Python app importing `json`,`os`,`sys`, etc. 
 
 Add a custom Flask route, say, `/myconfig`. It returns `jsonify(json.load(fd))`, where `fd` is a your `open()` config file on the docker host. This file would look something like:
@@ -87,7 +96,7 @@ def myconfig(maybe_query_string_here=None):
 
 then you can `curl localhost:5000/myconfig` to see how various Python modules behave in a container.
 
-Theoretically, you've got the Python interpreter at your disposal here, and you can't really fuck anything up because you're in a container.
+Theoretically, you've got the Python interpreter at your disposal here, along with whatever packages you installed. And you can't really f anything up for anyone but yourself, because you're in a rootless container.
 
 \*Obviously, Terms and Conditions apply. See store for details
 
